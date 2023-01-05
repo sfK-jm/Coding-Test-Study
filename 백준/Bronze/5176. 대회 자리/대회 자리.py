@@ -1,7 +1,7 @@
 K = int(input())
 for _ in range(K):
     P, M = map(int, input(). split())
-    seat = [True for seats in range(M)]
+    seat = [True for _ in range(M)]
     impossibleToSeatPeople = 0
     for _ in range(P):
         wantSeat = int(input())
