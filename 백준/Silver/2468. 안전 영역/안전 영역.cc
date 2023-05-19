@@ -29,7 +29,7 @@ int main(){
     } 
    }
    for (int d = 1; d < 101; d++){
-        fill(&visited[0][0], &visited[0][0] + 101 * 101, 0);
+        fill(&visited[0][0], &visited[n-1][n], 0);
         int cnt = 0;
         for (int i = 0; i < n; i++){
             for (int j = 0; j < n; j++){
