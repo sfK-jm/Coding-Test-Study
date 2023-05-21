@@ -30,7 +30,6 @@ void dfs(int y, int x){
     }
 }
 
-
 int main(){
     cin >> n;
     for(int i = 0; i < n; i++){
@@ -52,6 +51,4 @@ int main(){
 
     cout << ret.size() << endl;
     for(int i : ret) cout << i << endl;
-
-   
 }
