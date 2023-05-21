@@ -10,11 +10,10 @@ int cnt;
 vector<int> ret;
 queue<pair<int, int>> q;
 
-void dfs(int y, int x){
+void bfs(int y, int x){
     q.push({y, x});
     visited[y][x] = 1;
     cnt++;
-
     while(q.size()){
         tie(y,x) = q.front(); q.pop();
         for (int i = 0; i< 4; i++){
@@ -42,13 +41,12 @@ int main(){
         for (int j = 0; j < n; j++) {
             if(!a[i][j] || visited[i][j]) continue; 
             cnt = 0;
-            dfs(i, j);
+            bfs(i, j);
             ret.push_back(cnt);
         }
     }
 
     sort(ret.begin(), ret.end());
-
     cout << ret.size() << endl;
     for(int i : ret) cout << i << endl;
 }
