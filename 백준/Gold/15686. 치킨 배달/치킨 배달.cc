@@ -1,47 +1,85 @@
 #include <bits/stdc++.h>
 using namespace std;
-int n, m, a[54][54], result = 987654321;
-vector<vector<int>> chickenList;
-vector<pair<int, int>> _home, chicken;
-void combi(int start, vector<int> v) {
-    if (v.size() == m) {
-        chickenList.push_back(v);
+
+int n, m;
+int result = INT_MAX;
+
+struct Point {
+    int r, c;
+};
+
+vector<Point> houses;
+vector<Point> chickens;
+
+// distTable[집인덱스][치킨집인덱스] = 거리
+vector<vector<int>> distTable;
+vector<bool> visited;
+
+void dfs(int index, int count) {
+    if (count == m) {
+        int currentCityDist = 0;
+
+        for (int hIdx = 0; hIdx < houses.size(); ++hIdx) {
+            int minHouseDist = INT_MAX;
+
+            // 선택된 치킨집들(visited가 true인 곳) 중에서 가장 가까운 거리 찾기
+            for (int cIdx = 0; cIdx < chickens.size(); ++cIdx) {
+                if (visited[cIdx]) {
+                    int d = distTable[hIdx][cIdx];
+                    if (d < minHouseDist) {
+                        minHouseDist = d;
+                    }
+                }
+            }
+            currentCityDist += minHouseDist;
+
+            if (currentCityDist >= result) return;
+        }
+
+        if (currentCityDist < result) {
+            result = currentCityDist;
+        }
         return;
     }
-    for (int i = start + 1; i < chicken.size(); i++) {
-        v.push_back(i);
-        combi(i, v);
-        v.pop_back();
+    
+    for (int i = index; i < chickens.size(); ++i) {
+        visited[i] = true;
+        dfs(i + 1, count + 1);
+        visited[i] = false;
     }
-    return;
 }
 
 int main() {
-    cin >> n >> m;
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            cin >> a[i][j];
-            if (a[i][j] == 1)
-                _home.push_back({i, j});
-            if (a[i][j] == 2)
-                chicken.push_back({i, j});
-        }
-    }
-    vector<int> v;
-    combi(-1, v);
-    for (vector<int> cList : chickenList) {
-        int ret = 0;
-        for (pair<int, int> home : _home) {
-            int _min = 987654321;
-            for (int ch : cList) {
-                int _dist = abs(home.first - chicken[ch].first) +
-                            abs(home.second - chicken[ch].second);
-                _min = min(_min, _dist);
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    if (!(cin >> n >> m)) return 0;
+
+    for (int r = 0; r < n; ++r) {
+        for (int c = 0; c < n; ++c) {
+            int value;
+            cin >> value;
+            if (value == 1) {
+                houses.push_back({r, c});
+            } else if (value == 2) {
+                chickens.push_back({r, c});
             }
-            ret += _min;
         }
-        result = min(result, ret);
     }
+
+    distTable.resize(houses.size());
+
+    for (int hIdx = 0; hIdx < houses.size(); ++hIdx) {
+        for (int cIdx = 0; cIdx < chickens.size(); ++cIdx) {
+            int dist = abs(houses[hIdx].r - chickens[cIdx].r) +
+                       abs(houses[hIdx].c - chickens[cIdx].c);
+            distTable[hIdx].push_back(dist);
+        }
+    }
+
+    visited.resize(chickens.size(), false);
+
+    dfs(0, 0);
     cout << result << "\n";
     return 0;
 }
